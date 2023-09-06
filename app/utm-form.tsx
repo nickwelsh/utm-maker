@@ -22,7 +22,7 @@ const formSchema = z.object({
 })
 
 export function UtmForm() {
-	const [value, copy] = useCopyToClipboard()
+	const [, copy] = useCopyToClipboard()
 	const [url, setUrl] = useState('')
 
 	// 1. Define your form.
@@ -39,10 +39,10 @@ export function UtmForm() {
 	})
 
 	// 2. Define a submit handler.
-	function onSubmit(values: z.infer<typeof formSchema>) {
+	function onSubmit() {
 		toast.promise(copy(url), {
 			loading: 'Copying...',
-			success: data => {
+			success: () => {
 				return `Copied to clipboard!`
 			},
 			error: 'Error',
@@ -60,6 +60,7 @@ export function UtmForm() {
 			url = url.replace(/^http(s)?$/, '')
 			url = url.replace(/^http(s)?:$/, '')
 			url = url.replace(/^http(s)?:\/$/, '')
+			url = url.replace(/^http:\/\//, '')
 			if (!url.startsWith('http://') && !url.startsWith('https://')) {
 				url = 'https://' + url
 			}
