@@ -11,6 +11,7 @@ import { Code, P } from '@/components/ui/typography'
 import { useState } from 'react'
 import { useCopyToClipboard } from 'usehooks-ts'
 import { toast } from 'sonner'
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 
 const formSchema = z.object({
 	url: z.string(),
@@ -22,8 +23,9 @@ const formSchema = z.object({
 })
 
 export function UtmForm() {
+	const defaultUrl = 'Enter a URL to get started!'
 	const [, copy] = useCopyToClipboard()
-	const [url, setUrl] = useState('')
+	const [url, setUrl] = useState(defaultUrl)
 
 	// 1. Define your form.
 	const form = useForm<z.infer<typeof formSchema>>({
@@ -74,164 +76,175 @@ export function UtmForm() {
 			parsedUrl.search = params.toString()
 			setUrl(parsedUrl.toString())
 		} catch (error) {
-			setUrl('')
+			setUrl(defaultUrl)
 		}
 	}
 
 	return (
-		<>
-			<Code>{url}</Code>
+		<Card className='max-w-[370px]'>
+			<CardHeader>
+				<CardTitle>UTM Link Generator</CardTitle>
+				<CardDescription>
+					<Code className='mb-4 w-full overflow-scroll whitespace-nowrap'>{url}</Code>
+				</CardDescription>
+			</CardHeader>
 			<Form {...form}>
-				<form onSubmit={form.handleSubmit(onSubmit)} onChange={onUpdate} className='space-y-8'>
-					<TooltipProvider>
-						<FormField
-							control={form.control}
-							name='url'
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel>URL</FormLabel>
-									<FormControl>
-										<Input placeholder='https://google.com' {...field} />
-									</FormControl>
-									<FormDescription>This is the link you want to add UTM tracking to.</FormDescription>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-						<FormField
-							control={form.control}
-							name='source'
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel className='flex items-center gap-1'>
-										Source
-										<Tooltip>
-											<TooltipTrigger>
-												<QuestionMarkCircledIcon />
-											</TooltipTrigger>
-											<TooltipContent>
-												<P className='max-w-[35ch]'>
-													Where will people clicking this link be coming from? Facebook,
-													LinkedIn, that other one formerly known as Twitter.
-												</P>
-											</TooltipContent>
-										</Tooltip>
-									</FormLabel>
-									<FormControl>
-										<Input placeholder='facebook' {...field} />
-									</FormControl>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-						<FormField
-							control={form.control}
-							name='medium'
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel className='flex items-center gap-1'>
-										Medium
-										<Tooltip>
-											<TooltipTrigger>
-												<QuestionMarkCircledIcon />
-											</TooltipTrigger>
-											<TooltipContent>
-												<P className='max-w-[35ch]'>
-													More generally, where is this link going to be? Email, social,
-													banner
-												</P>
-											</TooltipContent>
-										</Tooltip>
-									</FormLabel>
-									<FormControl>
-										<Input placeholder='social' {...field} />
-									</FormControl>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-						<FormField
-							control={form.control}
-							name='campaign'
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel className='flex items-center gap-1'>
-										Campaign
-										<Tooltip>
-											<TooltipTrigger>
-												<QuestionMarkCircledIcon />
-											</TooltipTrigger>
-											<TooltipContent>
-												<P className='max-w-[35ch]'>
-													You can use this to identify a specific product promotion or
-													strategic campaign.
-												</P>
-											</TooltipContent>
-										</Tooltip>
-									</FormLabel>
-									<FormControl>
-										<Input placeholder='summer-sale' {...field} />
-									</FormControl>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-						<FormField
-							control={form.control}
-							name='term'
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel className='flex items-center gap-1'>
-										Term
-										<Tooltip>
-											<TooltipTrigger>
-												<QuestionMarkCircledIcon />
-											</TooltipTrigger>
-											<TooltipContent>
-												<P className='max-w-[35ch]'>
-													You can track specific keywords for paid search campaigns.
-												</P>
-											</TooltipContent>
-										</Tooltip>
-									</FormLabel>
-									<FormControl>
-										<Input placeholder='keyword' {...field} />
-									</FormControl>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-						<FormField
-							control={form.control}
-							name='content'
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel className='flex items-center gap-1'>
-										Content
-										<Tooltip>
-											<TooltipTrigger>
-												<QuestionMarkCircledIcon />
-											</TooltipTrigger>
-											<TooltipContent>
-												<P className='max-w-[35ch]'>
-													You can specify what you are making a link. Is it an image, text, a
-													menu? You can use this to differentiate ads or links that point to
-													the same URL from the same campaign.
-												</P>
-											</TooltipContent>
-										</Tooltip>
-									</FormLabel>
-									<FormControl>
-										<Input placeholder='image-ad' {...field} />
-									</FormControl>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-					</TooltipProvider>
-					<Button type='submit'>Copy</Button>
+				<form onSubmit={form.handleSubmit(onSubmit)} onChange={onUpdate}>
+					<CardContent className='space-y-8'>
+						<TooltipProvider>
+							<FormField
+								control={form.control}
+								name='url'
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>URL</FormLabel>
+										<FormControl>
+											<Input placeholder='https://google.com' {...field} />
+										</FormControl>
+										<FormDescription>
+											This is the link you want to add UTM tracking to.
+										</FormDescription>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+							<FormField
+								control={form.control}
+								name='source'
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel className='flex items-center gap-1'>
+											Source
+											<Tooltip>
+												<TooltipTrigger>
+													<QuestionMarkCircledIcon />
+												</TooltipTrigger>
+												<TooltipContent>
+													<P className='max-w-[35ch]'>
+														Where will people clicking this link be coming from? Facebook,
+														LinkedIn, that other one formerly known as Twitter.
+													</P>
+												</TooltipContent>
+											</Tooltip>
+										</FormLabel>
+										<FormControl>
+											<Input placeholder='facebook' {...field} />
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+							<FormField
+								control={form.control}
+								name='medium'
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel className='flex items-center gap-1'>
+											Medium
+											<Tooltip>
+												<TooltipTrigger>
+													<QuestionMarkCircledIcon />
+												</TooltipTrigger>
+												<TooltipContent>
+													<P className='max-w-[35ch]'>
+														More generally, where is this link going to be? Email, social,
+														banner
+													</P>
+												</TooltipContent>
+											</Tooltip>
+										</FormLabel>
+										<FormControl>
+											<Input placeholder='social' {...field} />
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+							<FormField
+								control={form.control}
+								name='campaign'
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel className='flex items-center gap-1'>
+											Campaign
+											<Tooltip>
+												<TooltipTrigger>
+													<QuestionMarkCircledIcon />
+												</TooltipTrigger>
+												<TooltipContent>
+													<P className='max-w-[35ch]'>
+														You can use this to identify a specific product promotion or
+														strategic campaign.
+													</P>
+												</TooltipContent>
+											</Tooltip>
+										</FormLabel>
+										<FormControl>
+											<Input placeholder='summer-sale' {...field} />
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+							<FormField
+								control={form.control}
+								name='term'
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel className='flex items-center gap-1'>
+											Term
+											<Tooltip>
+												<TooltipTrigger>
+													<QuestionMarkCircledIcon />
+												</TooltipTrigger>
+												<TooltipContent>
+													<P className='max-w-[35ch]'>
+														You can track specific keywords for paid search campaigns.
+													</P>
+												</TooltipContent>
+											</Tooltip>
+										</FormLabel>
+										<FormControl>
+											<Input placeholder='keyword' {...field} />
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+							<FormField
+								control={form.control}
+								name='content'
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel className='flex items-center gap-1'>
+											Content
+											<Tooltip>
+												<TooltipTrigger>
+													<QuestionMarkCircledIcon />
+												</TooltipTrigger>
+												<TooltipContent>
+													<P className='max-w-[35ch]'>
+														You can specify what you are making a link. Is it an image,
+														text, a menu? You can use this to differentiate ads or links
+														that point to the same URL from the same campaign.
+													</P>
+												</TooltipContent>
+											</Tooltip>
+										</FormLabel>
+										<FormControl>
+											<Input placeholder='image-ad' {...field} />
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+						</TooltipProvider>
+					</CardContent>
+					<CardFooter>
+						<Button type='submit'>Copy</Button>
+					</CardFooter>
 				</form>
 			</Form>
-		</>
+		</Card>
 	)
 }
